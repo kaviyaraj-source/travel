@@ -1,0 +1,384 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wanderlust Voyages — Discover the World</title>
+    <meta name="description" content="Premium travel & tourism experiences. Explore breathtaking destinations and curated tour packages worldwide.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'tourism/css/style.css' %}">
+</head>
+<body>
+
+    <!-- Navigation -->
+    <header class="navbar" id="navbar">
+        <div class="container navbar-inner">
+            <a href="#" class="logo">
+                <span class="logo-icon">✦</span>
+                Wanderlust
+            </a>
+            <nav class="nav-links" id="navLinks">
+                <a href="#destinations">Destinations</a>
+                <a href="#packages">Packages</a>
+                <a href="#about">About</a>
+                <a href="#testimonials">Reviews</a>
+                <a href="#contact" class="nav-cta">Plan Trip</a>
+            </nav>
+            <button class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Carousel -->
+    <section class="hero" id="hero">
+        <div class="hero-slider" id="heroSlider">
+            {% for dest in hero_destinations %}
+            <div class="hero-slide{% if forloop.first %} active{% endif %}" style="--slide-bg: url('{{ dest.image_url }}')">
+                <div class="hero-overlay"></div>
+                <div class="container hero-content">
+                    <p class="hero-label animate-up">{{ dest.country }}</p>
+                    <h1 class="hero-title animate-up delay-1">{{ dest.name }}</h1>
+                    <p class="hero-subtitle animate-up delay-2">{{ dest.tagline }}</p>
+                    <div class="hero-actions animate-up delay-3">
+                        <a href="#packages" class="btn btn-primary">Explore Packages</a>
+                        <a href="#contact" class="btn btn-outline">Get a Quote</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="hero-slide active" style="--slide-bg: url('https://images.unsplash.com/photo-1488646953014-85cb44e25828?w=1600')">
+                <div class="hero-overlay"></div>
+                <div class="container hero-content">
+                    <p class="hero-label animate-up">Travel the World</p>
+                    <h1 class="hero-title animate-up delay-1">Your Journey Begins Here</h1>
+                    <p class="hero-subtitle animate-up delay-2">Curated adventures to the world's most breathtaking destinations</p>
+                    <div class="hero-actions animate-up delay-3">
+                        <a href="#packages" class="btn btn-primary">Explore Packages</a>
+                        <a href="#contact" class="btn btn-outline">Get a Quote</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <div class="hero-controls">
+            <button class="hero-arrow prev" id="heroPrev" aria-label="Previous slide">&#8592;</button>
+            <div class="hero-dots" id="heroDots"></div>
+            <button class="hero-arrow next" id="heroNext" aria-label="Next slide">&#8594;</button>
+        </div>
+        <div class="scroll-indicator">
+            <span>Scroll</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="stats">
+        <div class="container stats-grid">
+            <div class="stat-item reveal">
+                <span class="stat-number" data-target="{{ stats.destinations|default:50 }}">0</span>
+                <span class="stat-label">Destinations</span>
+            </div>
+            <div class="stat-item reveal">
+                <span class="stat-number" data-target="{{ stats.packages|default:120 }}">0</span>
+                <span class="stat-label">Tour Packages</span>
+            </div>
+            <div class="stat-item reveal">
+                <span class="stat-number" data-target="{{ stats.happy_travelers|default:15000 }}">0</span>
+                <span class="stat-label">Happy Travelers</span>
+            </div>
+            <div class="stat-item reveal">
+                <span class="stat-number" data-target="{{ stats.avg_rating|floatformat:1|default:'4.8' }}" data-decimal="true">0</span>
+                <span class="stat-label">Average Rating</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinations -->
+    <section class="section destinations" id="destinations">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Explore</span>
+                <h2 class="section-title">Featured Destinations</h2>
+                <p class="section-desc">Handpicked locations that inspire wonder and create unforgettable memories.</p>
+            </div>
+            <div class="destinations-grid">
+                {% for dest in featured_destinations %}
+                <article class="dest-card reveal" style="--delay: {{ forloop.counter0 }}">
+                    <div class="dest-card-image">
+                        <img src="{{ dest.image_url }}" alt="{{ dest.name }}" loading="lazy">
+                        <div class="dest-card-badge">
+                            <span class="rating">★ {{ dest.rating }}</span>
+                        </div>
+                    </div>
+                    <div class="dest-card-body">
+                        <span class="dest-country">{{ dest.country }}</span>
+                        <h3 class="dest-name">{{ dest.name }}</h3>
+                        <p class="dest-tagline">{{ dest.tagline }}</p>
+                        <div class="dest-footer">
+                            <span class="dest-price">From <strong>${{ dest.price_from }}</strong></span>
+                            <a href="#contact" class="dest-link">Book Now →</a>
+                        </div>
+                    </div>
+                </article>
+                {% empty %}
+                <p class="empty-state">No destinations yet. Run <code>python manage.py seed_data</code> to populate sample data.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- Packages -->
+    <section class="section packages" id="packages">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Curated</span>
+                <h2 class="section-title">Popular Tour Packages</h2>
+                <p class="section-desc">All-inclusive experiences designed by travel experts for every type of explorer.</p>
+            </div>
+            <div class="packages-grid">
+                {% for pkg in popular_packages %}
+                <article class="package-card reveal" style="--delay: {{ forloop.counter0 }}">
+                    <div class="package-image">
+                        <img src="{{ pkg.image_url }}" alt="{{ pkg.title }}" loading="lazy">
+                        {% if pkg.is_popular %}
+                        <span class="package-badge">Popular</span>
+                        {% endif %}
+                    </div>
+                    <div class="package-body">
+                        <div class="package-meta">
+                            <span>{{ pkg.duration_days }} Days</span>
+                            <span class="dot">•</span>
+                            <span class="difficulty {{ pkg.difficulty }}">{{ pkg.get_difficulty_display }}</span>
+                        </div>
+                        <h3 class="package-title">{{ pkg.title }}</h3>
+                        <p class="package-dest">{{ pkg.destination.name }}, {{ pkg.destination.country }}</p>
+                        <ul class="package-highlights">
+                            {% for highlight in pkg.highlights_list|slice:":3" %}
+                            <li>{{ highlight }}</li>
+                            {% endfor %}
+                        </ul>
+                        <div class="package-footer">
+                            <span class="package-price">${{ pkg.price }} <small>/person</small></span>
+                            <a href="#contact" class="btn btn-sm">Inquire</a>
+                        </div>
+                    </div>
+                </article>
+                {% empty %}
+                <p class="empty-state">No packages available yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="section about" id="about">
+        <div class="container about-grid">
+            <div class="about-images reveal">
+                <div class="about-img main">
+                    <img src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600" alt="Travel adventure">
+                </div>
+                <div class="about-img secondary">
+                    <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=400" alt="Scenic landscape">
+                </div>
+                <div class="about-badge">
+                    <span class="badge-number">15+</span>
+                    <span class="badge-text">Years of Excellence</span>
+                </div>
+            </div>
+            <div class="about-content reveal">
+                <span class="section-tag">Why Us</span>
+                <h2 class="section-title">Crafting Journeys That Transform Lives</h2>
+                <p>At Wanderlust Voyages, we believe travel is more than visiting places — it's about connecting with cultures, creating stories, and discovering yourself along the way.</p>
+                <p>Our team of local experts and travel specialists design every itinerary with passion, ensuring seamless experiences from the moment you dream of a trip to the memories you bring home.</p>
+                <div class="about-features">
+                    <div class="feature">
+                        <div class="feature-icon">🌍</div>
+                        <div>
+                            <h4>Global Network</h4>
+                            <p>Partners in 60+ countries worldwide</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">🛡️</div>
+                        <div>
+                            <h4>Safe & Secure</h4>
+                            <p>24/7 support and travel insurance</p>
+                        </div>
+                    </div>
+                    <div class="feature">
+                        <div class="feature-icon">✨</div>
+                        <div>
+                            <h4>Tailor-Made</h4>
+                            <p>Custom itineraries for every budget</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section testimonials" id="testimonials">
+        <div class="container">
+            <div class="section-header reveal">
+                <span class="section-tag">Testimonials</span>
+                <h2 class="section-title">Stories From Our Travelers</h2>
+            </div>
+            <div class="testimonials-slider" id="testimonialSlider">
+                <div class="testimonials-track" id="testimonialTrack">
+                    {% for t in testimonials %}
+                    <blockquote class="testimonial-card reveal">
+                        <div class="testimonial-stars">
+                            {% for i in "12345" %}
+                            <span class="star{% if forloop.counter <= t.rating %} filled{% endif %}">★</span>
+                            {% endfor %}
+                        </div>
+                        <p class="testimonial-text">"{{ t.content }}"</p>
+                        <footer class="testimonial-author">
+                            {% if t.avatar_url %}
+                            <img src="{{ t.avatar_url }}" alt="{{ t.author_name }}" class="author-avatar">
+                            {% else %}
+                            <div class="author-avatar placeholder">{{ t.author_name|first }}</div>
+                            {% endif %}
+                            <div>
+                                <cite>{{ t.author_name }}</cite>
+                                {% if t.author_role %}<span>{{ t.author_role }}</span>{% endif %}
+                            </div>
+                        </footer>
+                    </blockquote>
+                    {% empty %}
+                    <blockquote class="testimonial-card">
+                        <p class="testimonial-text">"An unforgettable experience from start to finish!"</p>
+                    </blockquote>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="testimonial-dots" id="testimonialDots"></div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section contact" id="contact">
+        <div class="container contact-grid">
+            <div class="contact-info reveal">
+                <span class="section-tag">Get in Touch</span>
+                <h2 class="section-title">Plan Your Next Adventure</h2>
+                <p>Tell us about your dream destination and we'll craft a personalized itinerary just for you.</p>
+                <div class="contact-details">
+                    <div class="contact-item">
+                        <span class="contact-icon">📍</span>
+                        <div>
+                            <strong>Office</strong>
+                            <p>123 Explorer Lane, New York, NY 10001</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">📞</span>
+                        <div>
+                            <strong>Phone</strong>
+                            <p>+1 (800) 555-0199</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">✉️</span>
+                        <div>
+                            <strong>Email</strong>
+                            <p>hello@wanderlustvoyages.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <form class="contact-form reveal" method="post" action="{% url 'submit_inquiry' %}">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="full_name">Full Name</label>
+                        <input type="text" id="full_name" name="full_name" required placeholder="John Doe">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required placeholder="john@example.com">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone" placeholder="+1 555 000 0000">
+                    </div>
+                    <div class="form-group">
+                        <label for="travelers">Travelers</label>
+                        <input type="number" id="travelers" name="travelers" min="1" max="50" value="2">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="destination_interest">Destination Interest</label>
+                        <input type="text" id="destination_interest" name="destination_interest" placeholder="e.g. Bali, Japan, Europe">
+                    </div>
+                    <div class="form-group">
+                        <label for="travel_date">Preferred Date</label>
+                        <input type="date" id="travel_date" name="travel_date">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="4" placeholder="Tell us about your dream trip..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">
+                    <span>Send Inquiry</span>
+                    <span class="btn-arrow">→</span>
+                </button>
+                <div class="form-success" id="formSuccess">
+                    Thank you! We'll get back to you within 24 hours.
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container footer-grid">
+            <div class="footer-brand">
+                <a href="#" class="logo">
+                    <span class="logo-icon">✦</span>
+                    Wanderlust
+                </a>
+                <p>Creating extraordinary travel experiences since 2010. Your adventure awaits.</p>
+            </div>
+            <div class="footer-links">
+                <h4>Quick Links</h4>
+                <a href="#destinations">Destinations</a>
+                <a href="#packages">Packages</a>
+                <a href="#about">About Us</a>
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="footer-links">
+                <h4>Destinations</h4>
+                <a href="#destinations">Europe</a>
+                <a href="#destinations">Asia</a>
+                <a href="#destinations">Americas</a>
+                <a href="#destinations">Oceania</a>
+            </div>
+            <div class="footer-newsletter">
+                <h4>Newsletter</h4>
+                <p>Get travel inspiration delivered to your inbox.</p>
+                <form class="newsletter-form" onsubmit="return false;">
+                    <input type="email" placeholder="Your email" aria-label="Email for newsletter">
+                    <button type="submit" aria-label="Subscribe">→</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 Wanderlust Voyages. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="{% static 'tourism/js/main.js' %}"></script>
+</body>
+</html>
